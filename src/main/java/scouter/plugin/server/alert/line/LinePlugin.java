@@ -68,13 +68,13 @@ public class LinePlugin {
                         try {
                         	// Get server configurations for line
                             String token = conf.getValue("ext_plugin_line_access_token");
-                            String chatId = conf.getValue("ext_plugin_line_group_id");
+                            String userIds = conf.getValue("ext_plugin_line_group_id");
                             
                             assert token != null;
-                            assert chatId != null;
+                            assert userIds != null;
                         
                             // Make a request URL using telegram bot api
-                            String url = "https://api.line.me/v2/bot/message/push";
+                            String url = "https://api.line.me/v2/bot/message/multicast";
 
                         	// Get the agent Name
                         	String name = AgentManager.getAgentName(pack.objHash) == null ? "N/A" : AgentManager.getAgentName(pack.objHash);
@@ -103,7 +103,7 @@ public class LinePlugin {
                                               "[MESSAGE] : " + msg;
 
                             LinePushFormat pushFormat = new LinePushFormat();
-                            pushFormat.setTo(chatId);
+                            pushFormat.setTo(userIds);
                             pushFormat.addMessage(new StringMessage(contents));
 
                             String body = new Gson().toJson(pushFormat);
@@ -119,7 +119,7 @@ public class LinePlugin {
                             HttpResponse response = client.execute(post);
                             
                             if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-                                println("Line message sent to [" + chatId + "] successfully.");
+                                println("Line message sent to [" + userIds + "] successfully.");
                             } else {
                                 println("Line message sent failed. Verify below information.");
                                 println("[URL] : " + url);
